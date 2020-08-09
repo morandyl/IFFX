@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fuel Converter</title>
+    <link rel="stylesheet" type="text/css" href="index.css" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script type="text/javascript">
+        function calculate() {
+            let density = parseFloat(document.getElementById('density').value);
+            const densityType = document.getElementById('densityType').value;
+            const current = parseFloat(document.getElementById('current').value);
+            const uplifted = parseFloat(document.getElementById('uplifted').value);
+
+            let errors = [];
+            if (isNaN(density) || density < 0)
+                errors.push('Fuel Density invalid');
+            if (isNaN(current) || current < 0)
+                errors.push('Remaining Before Fueling invalid');
+            if (isNaN(uplifted) || uplifted < 0)
+                errors.push('Total Uplifted invalid');
+
+            if (errors.length > 0) {
+                document.getElementById('errors').innerHTML = errors.join("<br />");
+                document.getElementById('fuelDensity').innerText = "";
+                document.getElementById('totalUplifted').innerText = "";
+                document.getElementById('refueledAmount').innerText = "";
+                document.getElementById('totalFuel').innerText = "";
+                return;
+            }
+
+            if (densityType === 'customary')
+                density *= 0.11982643;
+
+            const upliftedLiters = uplifted * 3.7854;
+            const refueled = upliftedLiters * density;
+            const total = current + refueled;
+
+            document.getElementById('errors').innerText = "";
+            document.getElementById('fuelDensity').innerText = Math.round(density*1000)/1000;
+            document.getElementById('totalUplifted').innerText = Math.round(upliftedLiters);
+            document.getElementById('refueledAmount').innerText = Math.round(refueled);
+            document.getElementById('totalFuel').innerText = Math.round(total);
+        }
+    </script>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Fuel Converter</h1>
+
+    <div id="errors" class="form-group errors">
+
+    </div>
+
+    <div class="form-group">
+        <label>Fuel Density</label>
+        <input type="number" id="density" />
+        <select id="densityType">
+            <option value="metric">Metric (kg/ltr)</option>
+            <option value="customary">Customary (lbs/usgal)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Remaining Before Fueling (kg)</label>
+        <input type="number" id="current" />
+    </div>
+
+    <div class="form-group">
+        <label>Total Uplifted (USG)</label>
+        <input type="number" id="uplifted" />
+    </div>
+
+    <div class="form-group">
+        <button onclick="calculate()">Calculate</button>
+    </div>
+
+    <div class="form-group">
+        <strong>Fuel Density (kg/ltr): </strong>
+        <span id="fuelDensity"></span>
+        <br />
+        <strong>Total Uplifted (ltr): </strong>
+        <span id="totalUplifted"></span>
+        <br />
+        <strong>Refueled Amount (kg): </strong>
+        <span id="refueledAmount"></span>
+        <br />
+        <strong>Total Fuel (kg): </strong>
+        <span id="totalFuel"></span>
+    </div>
+</div>
+
+</body>
+</html>
